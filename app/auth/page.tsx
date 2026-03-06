@@ -3,9 +3,14 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import {
+  DEFAULT_LANGUAGE,
+  isLanguage,
+  LANGUAGE_STORAGE_KEY,
+  type Language,
+} from "@/lib/language";
 
 type Mode = "signin" | "signup" | "reset";
-type Language = "en" | "de" | "fr" | "es" | "it" | "pt" | "ro" | "nl";
 
 type Copy = {
   title: string;
@@ -194,7 +199,7 @@ const languageOptions: Array<{ value: Language; label: string }> = [
 ];
 
 export default function AuthPage() {
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>(DEFAULT_LANGUAGE);
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -205,23 +210,15 @@ export default function AuthPage() {
   const t = copyByLanguage[language];
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("scorebet_lang");
-    if (
-      stored === "en" ||
-      stored === "de" ||
-      stored === "fr" ||
-      stored === "es" ||
-      stored === "it" ||
-      stored === "pt" ||
-      stored === "ro" ||
-      stored === "nl"
-    ) {
+    const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (isLanguage(stored)) {
       setLanguage(stored);
     }
   }, []);
 
   useEffect(() => {
-    window.localStorage.setItem("scorebet_lang", language);
+    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    window.dispatchEvent(new Event("scorebet-language-change"));
   }, [language]);
 
   const buttonLabel = useMemo(() => {
