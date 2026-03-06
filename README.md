@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ScoreBet
 
-## Getting Started
+Bootstrap pentru `scorebet.app` cu:
+- Next.js (App Router + TypeScript)
+- Vercel (hosting/deploy)
+- Supabase (Postgres + Auth + Storage)
+- Firebase (Analytics / servicii client)
 
-First, run the development server:
+## 1) Rulare locală
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Aplicația pornește pe `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 2) Variabile de mediu
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Completează valorile în `.env.local`:
 
-## Learn More
+```env
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-To learn more about Next.js, take a look at the following resources:
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 3) Supabase setup
 
-## Deploy on Vercel
+1. Creează proiect nou în Supabase.
+2. Ia URL + `anon key` din `Project Settings -> API`.
+3. Ia `service_role key` (doar server-side, niciodată în client).
+4. Pune aceste valori în `.env.local` și apoi în Vercel Environment Variables.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 4) Firebase setup
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Creează proiect nou în Firebase Console.
+2. Adaugă o Web App și copiază configurația.
+3. Completează variabilele `NEXT_PUBLIC_FIREBASE_*`.
+4. Dacă folosești Analytics, activează Google Analytics în proiect.
+
+## 5) Deploy pe Vercel
+
+1. Urcă codul într-un repo GitHub.
+2. Importă repo-ul în Vercel.
+3. Adaugă toate variabilele de mediu din secțiunea de mai sus în Vercel (`Project Settings -> Environment Variables`).
+4. Rulează primul deploy.
+
+## 6) Domeniu `scorebet.app`
+
+1. În Vercel: `Project -> Settings -> Domains -> Add scorebet.app`.
+2. Adaugă și `www.scorebet.app` (opțional, recomandat).
+3. În providerul de domeniu:
+   - pentru apex (`scorebet.app`) configurează înregistrarea recomandată de Vercel;
+   - pentru `www`, de regulă CNAME către target-ul Vercel.
+4. După propagare DNS, setează redirect `www -> apex` sau invers (în Vercel).
+
+## Endpoint util
+
+- Health check: `GET /api/health`
+- Verifică rapid ce variabile critice sunt prezente.
